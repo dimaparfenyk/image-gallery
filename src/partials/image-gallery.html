@@ -11,24 +11,33 @@
       integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
       crossorigin="anonymous"
     />
+    <link 
+    rel="stylesheet" href="css/common.css"
+    />
 </head>
 
 <body>
     <main>
         <section class="section">
             <form class="search-form" id="search-form">
+               <div class="search-container">
                 <input
                   type="text"
                   name="searchQuery"
                   autocomplete="off"
-                  placeholder="Search images..."
+                  placeholder=" Search images..."
                 />
-                <button type="submit">Search</button>
+                <button class="search-btn" type="submit">
+                    <svg  width="20px" height="20px" fill="grey">
+                        <use href="./images/search.svg#icon-search"></use>
+                    </svg>
+                </button>
+               </div> 
             </form>
           
             <div class="gallery"> </div>
         
-            <button type="button" class="load-more ">
+            <button type="button" class="load-more btn">
                 <span
                 class="spinner-border spinner-border-sm spinner is-hidden"
                 role="status"

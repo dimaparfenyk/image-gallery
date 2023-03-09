@@ -5,7 +5,7 @@ import  API  from "./js/apiService";
 import LoadMoreButton from "./js/components";
 
 const form=document.querySelector('.search-form');
-const gallery=document.querySelector('.gallery');
+const container=document.querySelector('.gallery');
 
 const api= new API();
 const loadMoreBtn = new LoadMoreButton({selector:'.load-more', hidden: true,});
@@ -27,8 +27,11 @@ try {
            appendGalleryMarkup(hits); 
            api.incrementPage();
            loadMoreBtn.enable();
+           smoothScrollingPage();
+           Notify.success(`Hooray! We found ${hits.length} more images.`)
         //    инициализация библиотеки для просмотра изображений
-           new SimpleLightbox('.gallery a',{captionsData: 'alt',animationSpeed:250});
+       const gallery=new SimpleLightbox('.gallery a',{captionsData: 'alt',animationSpeed:250});
+       gallery.refresh();
        }) 
         } catch (error) {  
         console.log(error);   
@@ -63,16 +66,20 @@ async function onSearch(e){
         if(hits.length<api.per_page){
             hideLoadMoreButtonAtCollectionEnd();
         }
-        Notify.success(`Hooray! We found ${totalHits} images.`)
         // Rendering
         clearGalleryMarkup();
         appendGalleryMarkup(hits);
-
+        // smoothScrollingPage();
+        Notify.success(`Hooray! We found ${hits.length} images.`)
         new SimpleLightbox('.gallery a',{captionsData: 'alt',animationSpeed:250});
         // Increment page for next fetch
         api.incrementPage();
         // Logic of buttons UI
         loadMoreBtn.enable();
+
+        console.dir(document
+            .querySelector(".gallery")
+            .firstElementChild.getBoundingClientRect())
     })
         form.reset();
 };
@@ -81,7 +88,7 @@ function renderImgMarkup(items){
 return items.map(({webformatURL, largeImageURL, tags, likes,views,comments,downloads})=>
     `<div class="photo-card">
     <a href="${largeImageURL}">
-    <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+    <img class="img" src="${webformatURL}" alt="${tags}" loading="lazy" />
     </a> 
     <div class="info">
       <p class="info-item"> Likes: ${likes}</p>
@@ -94,11 +101,11 @@ return items.map(({webformatURL, largeImageURL, tags, likes,views,comments,downl
 };
 
 function appendGalleryMarkup(items) {
-   gallery.insertAdjacentHTML('beforeend', renderImgMarkup(items))
+   container.insertAdjacentHTML('beforeend', renderImgMarkup(items))
 };
 
 function clearGalleryMarkup(){
-    gallery.innerHTML='';
+    container.innerHTML='';
 };
 
 function hideLoadMoreButtonAtCollectionEnd(){
@@ -106,6 +113,15 @@ function hideLoadMoreButtonAtCollectionEnd(){
     Notify.info(`We're sorry, but you've reached the end of search results.`);
 };
 
-
+function smoothScrollingPage(){
+    const { height: cardHeight } = document
+  .querySelector(".gallery")
+  .firstElementChild.getBoundingClientRect();
+ 
+window.scrollBy({
+  top: cardHeight * 2,
+  behavior: "smooth",
+});
+}
 
 
